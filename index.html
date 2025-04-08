@@ -1,0 +1,113 @@
+
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <title>KFZ-Teile Finder</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f7f7f7;
+      margin: 0;
+      padding: 20px;
+    }
+    h1 {
+      color: #333;
+    }
+    .search-box {
+      margin-bottom: 20px;
+    }
+    input[type="text"] {
+      padding: 10px;
+      width: 300px;
+      font-size: 16px;
+    }
+    button {
+      padding: 10px 15px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    .results {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      gap: 20px;
+    }
+    .part-card {
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      padding: 15px;
+    }
+    .part-card img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 8px;
+      margin-bottom: 10px;
+    }
+    .source {
+      font-size: 14px;
+      color: gray;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>KFZ-Teile Finder</h1>
+
+  <div class="search-box">
+    <input type="text" id="partNumber" placeholder="Teilenummer eingeben">
+    <button onclick="searchPart()">Suchen</button>
+  </div>
+
+  <div class="results" id="results">
+    <!-- Suchergebnisse werden hier angezeigt -->
+  </div>
+
+  <script>
+    function searchPart() {
+      const partNumber = document.getElementById("partNumber").value;
+      const resultsDiv = document.getElementById("results");
+      resultsDiv.innerHTML = "";
+
+      if (!partNumber) {
+        alert("Bitte eine Teilenummer eingeben.");
+        return;
+      }
+
+      const sampleData = [
+        {
+          source: "Stahlgruber",
+          partNumber: partNumber,
+          description: "Bremsbelagsatz Vorderachse",
+          price: "59,99 €",
+          availability: "Auf Lager",
+          image: "https://via.placeholder.com/300x200?text=Stahlgruber"
+        },
+        {
+          source: "WM SE",
+          partNumber: partNumber,
+          description: "Bremsbelagsatz Vorderachse - Premium",
+          price: "64,50 €",
+          availability: "2–3 Werktage",
+          image: "https://via.placeholder.com/300x200?text=WM+SE"
+        }
+      ];
+
+      sampleData.forEach(part => {
+        const card = document.createElement("div");
+        card.className = "part-card";
+        card.innerHTML = `
+          <img src="${part.image}" alt="Teilebild">
+          <div><strong>Quelle:</strong> <span class="source">${part.source}</span></div>
+          <div><strong>Teilenummer:</strong> ${part.partNumber}</div>
+          <div><strong>Beschreibung:</strong> ${part.description}</div>
+          <div><strong>Preis:</strong> ${part.price}</div>
+          <div><strong>Verfügbarkeit:</strong> ${part.availability}</div>
+        `;
+        resultsDiv.appendChild(card);
+      });
+    }
+  </script>
+
+</body>
+</html>
