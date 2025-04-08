@@ -1,0 +1,103 @@
+
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <title>KFZ-Teile Finder mit API</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f2f2f2;
+      padding: 20px;
+    }
+    h1 {
+      color: #333;
+    }
+    .search-box {
+      margin-bottom: 20px;
+    }
+    input[type="text"] {
+      padding: 10px;
+      width: 300px;
+      font-size: 16px;
+    }
+    button {
+      padding: 10px 15px;
+      font-size: 16px;
+    }
+    .results {
+      margin-top: 20px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      gap: 20px;
+    }
+    .part-card {
+      background: white;
+      border-radius: 10px;
+      padding: 15px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    .part-card img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 5px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>KFZ-Teile Finder (Test API)</h1>
+  <div class="search-box">
+    <input type="text" id="partNumber" placeholder="Teilenummer z. B. 7024">
+    <button onclick="searchPart()">Suchen</button>
+  </div>
+
+  <div id="results" class="results"></div>
+
+  <script>
+    async function searchPart() {
+      const partNumber = document.getElementById("partNumber").value;
+      const results = document.getElementById("results");
+      results.innerHTML = "";
+
+      if (!partNumber) {
+        alert("Bitte eine Teilenummer eingeben.");
+        return;
+      }
+
+      try {
+        const response = await fetch("https://tecdoc.p.rapidapi.com/articles/" + partNumber, {
+          method: "GET",
+          headers: {
+            "X-RapidAPI-Key": "ad03e28c0fmshdfcd3a710ee4957p16b4e3jsn602824369d17",
+            "X-RapidAPI-Host": "tecdoc.p.rapidapi.com"
+          }
+        });
+
+        const data = await response.json();
+
+        if (!data || !data.data) {
+          results.innerHTML = "<p>Keine Daten gefunden.</p>";
+          return;
+        }
+
+        const part = data.data;
+        const card = document.createElement("div");
+        card.className = "part-card";
+        card.innerHTML = `
+          <h3>${part.articleName || "Unbekanntes Teil"}</h3>
+          <p><strong>Hersteller:</strong> ${part.brandName || "Unbekannt"}</p>
+          <p><strong>Artikelnummer:</strong> ${part.articleNumber || "?"}</p>
+          <img src="${part.articleLink || 'https://via.placeholder.com/300x200?text=Kein+Bild'}" alt="Teilebild">
+        `;
+        results.appendChild(card);
+
+      } catch (error) {
+        console.error("Fehler:", error);
+        results.innerHTML = "<p>Fehler beim Abrufen der Daten.</p>";
+      }
+    }
+  </script>
+
+</body>
+</html>
